@@ -1,18 +1,26 @@
 import { Fragment, useContext } from "react";
 import { Outlet, Link } from "react-router-dom";
-import { ReactComponent as Shopping } from "../../assets/shopping.svg";
-import "./navigation.styles.scss";
-import { UserContext } from "../../contexts/user.context";
-import { signoutUser } from "../../utils/firebase.component";
 import { async } from "@firebase/util";
 
+import { ReactComponent as Shopping } from "../../assets/shopping.svg";
+
+import "./navigation.styles.scss";
+
+import { UserContext } from "../../contexts/user.context";
+import { signoutUser } from "../../utils/firebase.component";
+import { CartContext } from "../../contexts/cart.context"
+
+import  CartIcon  from "../../component/cart-icon/cart-icon.component";
+import CartDropDown from "../../component/cart-dropdown/cart-dropdown.component"
+
+
 const Navigation = () => {
-  const { CurrentUser  } = useContext(UserContext);
+  const { CurrentUser } = useContext(UserContext);
+  const {isCartOpen} = useContext(CartContext);
 
-
-  const Signouthandler = async() =>{
-   await signoutUser();
-  }
+  const Signouthandler = async () => {
+    await signoutUser();
+  };
   return (
     <Fragment>
       <div className="navigation">
@@ -27,8 +35,8 @@ const Navigation = () => {
             Shop
           </Link>
           {CurrentUser ? (
-            <span className="nav-link" onClick={Signouthandler}> 
-             Sign-out
+            <span className="nav-link" onClick={Signouthandler}>
+              Sign-out
             </span>
           ) : (
             <Link className="nav-link" to="auth">
@@ -36,6 +44,10 @@ const Navigation = () => {
             </Link>
           )}
         </div>
+        <Link>
+          <CartIcon />
+        </Link>
+        {isCartOpen && <CartDropDown/>}
       </div>
       <Outlet />
     </Fragment>
